@@ -1,88 +1,81 @@
-﻿using System;
-using System.Data.OleDb;
+﻿using System; // הוספנו using System
 using System.Windows;
+using System.Windows.Input;
+using Model;
+using ViewModel;
 
 namespace ToTheLicense
 {
     public partial class Login : Window
     {
-        private OleDbConnection connection;
-
         public Login()
         {
             InitializeComponent();
-            string connectionString =
-                @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=DataBase\Database11.accdb;Persist Security Info=True;";
-            connection = new OleDbConnection(connectionString);
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed) DragMove();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void RegisterLink_Click(object sender, RoutedEventArgs e)
+        {
+            Register registerWindow = new Register();
+            registerWindow.Show();
+            this.Close();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            string username = UsernameTextBox.Text.Trim();
-            string password = PasswordInputBox.Password; // לא חובה Trim בסיסמאות
+            string username = UsernameTextBox.Text;
+            string password = PasswordInputBox.Password;
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                ErrorMessageTextBlock.Text = "Please enter both username and password.";
+                ErrorMessageTextBlock.Text = "נא להזין שם משתמש וסיסמה";
                 return;
             }
+
+            ErrorMessageTextBlock.Text = "";
 
             try
             {
-                if (connection.State != System.Data.ConnectionState.Open)
-                    connection.Open();
+                // 1. בדיקת מורה
+                TeacherDB teacherDB = new TeacherDB();
+                Teacher teacher = teacherDB.Login(username, password);
 
-                string query =
-                    "SELECT ID, Username, [Password], FirstName " +
-                    "FROM tblUsers WHERE Username = ? AND [Password] = ?";
-
-                using (OleDbCommand cmd = new OleDbCommand(query, connection))
+                if (teacher != null)
                 {
-                    cmd.Parameters.AddWithValue("?", username);
-                    cmd.Parameters.AddWithValue("?", password);
-
-                    using (OleDbDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader != null && reader.Read())
-                        {
-                            ErrorMessageTextBlock.Text = string.Empty;
-
-                            string firstName = reader["FirstName"]?.ToString();
-                            string displayName = string.IsNullOrWhiteSpace(firstName)
-                                ? (reader["Username"]?.ToString() ?? "User")
-                                : firstName;
-
-                            // בלי MessageBox — נכנסים ישר לבית
-                            HomePage homePage = new HomePage(displayName);
-                            homePage.Show();
-                            this.Close();
-                            return;
-                        }
-                        else
-                        {
-                            ErrorMessageTextBlock.Text = "Invalid username or password.";
-                            // אופציונלי: ניקוי סיסמה לאחר כישלון
-                            PasswordInputBox.Clear();
-                            return;
-                        }
-                    }
+                    HomePage homePage = new HomePage(teacher);
+                    homePage.Show();
+                    this.Close();
+                    return;
                 }
+
+                // 2. בדיקת תלמיד
+                StudentDB studentDB = new StudentDB();
+                Student student = studentDB.Login(username, password);
+
+                if (student != null)
+                {
+                    HomePage homePage = new HomePage(student);
+                    homePage.Show();
+                    this.Close();
+                    return;
+                }
+
+                ErrorMessageTextBlock.Text = "שם משתמש או סיסמה שגויים";
             }
             catch (Exception ex)
             {
-                ErrorMessageTextBlock.Text = "Database connection error: " + ex.Message;
-                return;
-            }
-            finally
-            {
-                if (connection.State == System.Data.ConnectionState.Open)
-                    connection.Close();
+                // זה יראה לך אם הבעיה היא בנתיב לדאטה בייס
+                MessageBox.Show("שגיאת התחברות לדאטה בייס:\n" + ex.Message, "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e) => this.Close();
-
-        private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => this.DragMove();
     }
 }

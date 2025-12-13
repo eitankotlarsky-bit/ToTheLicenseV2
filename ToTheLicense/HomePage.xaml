@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="לרישיון - דף הבית"
-        Height="640" Width="980"
+        Height="700" Width="1100"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         Background="#F7F9FC"
@@ -10,73 +10,43 @@
         FlowDirection="RightToLeft">
 
     <Window.Resources>
-        <!-- צבעים -->
-        <SolidColorBrush x:Key="BlueBrush" Color="#002366"/>
-        <!-- כחול כהה (לוגו) -->
-        <SolidColorBrush x:Key="BlueLightBrush" Color="#2B4A9B"/>
-        <!-- כחול בהיר יותר -->
-        <SolidColorBrush x:Key="YellowBrush" Color="#FFDDA800"/>
-        <!-- צהוב -->
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#002366"/>
+        <SolidColorBrush x:Key="AccentYellow" Color="#FFDDA800"/>
         <SolidColorBrush x:Key="TextDark" Color="#222222"/>
-        <SolidColorBrush x:Key="CardBg" Color="White"/>
-        <SolidColorBrush x:Key="CardBorder" Color="#E6E9EF"/>
+        <SolidColorBrush x:Key="TextLight" Color="#666666"/>
 
-        <!-- סטייל לכפתורי עליון (שטוחים) -->
-        <Style x:Key="HeaderFlatButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,2"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- כפתור סגירה סטטי (X) -->
-        <Style x:Key="CloseButtonStatic" TargetType="Button" BasedOn="{StaticResource HeaderFlatButton}">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="16"/>
-        </Style>
-
-        <!-- כרטיס פעולה -->
-        <Style x:Key="ActionCard" TargetType="Border">
-            <Setter Property="CornerRadius" Value="14"/>
-            <Setter Property="Background" Value="{StaticResource CardBg}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}"/>
+        <!-- כרטיס ראשי (Hero Card) -->
+        <Style x:Key="HeroCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="18"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="14" ShadowDepth="0" Opacity="0.08" Color="#000000"/>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.1" Color="Black"/>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- כפתור פעולה בתוך כרטיס -->
-        <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource BlueBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="10,8"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+        <!-- כפתור פעולה -->
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentYellow}"/>
+            <Setter Property="Foreground" Value="#222"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="20,10"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,2"/>
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFC107"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -85,103 +55,160 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="88"/>
-            <!-- Header -->
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
-            <!-- Content -->
         </Grid.RowDefinitions>
 
         <!-- HEADER -->
-        <Grid Grid.Row="0" Background="{StaticResource BlueBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Background="{StaticResource PrimaryBlue}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
 
-            <!-- לוגו + כותרת + ברוך הבא -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0">
-                <!-- לוגו "ל" בסגנון של תמרור הלומד -->
-                <Grid Width="56" Height="56" Margin="0,0,12,0">
-                    <Rectangle Fill="{StaticResource BlueLightBrush}" RadiusX="10" RadiusY="10"/>
-                    <Polygon Points="28,6 8,46 48,46" Fill="White"/>
-                    <TextBlock Text="ל"
-                               FontSize="32" FontWeight="Bold" Foreground="Black"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2,0,0"/>
+                <!-- הלוגו המתוקן: ריבוע כחול עם משולש לבן ואות ל' שחורה -->
+                <Grid Width="48" Height="48" Margin="0,0,12,0">
+                    <!-- רקע כחול -->
+                    <Rectangle Fill="#4c6ef5" RadiusX="10" RadiusY="10"/>
+                    <!-- משולש לבן -->
+                    <Polygon Points="24,8 8,40 40,40" Fill="White"/>
+                    <!-- האות ל' -->
+                    <TextBlock Text="ל" 
+                               FontSize="22" 
+                               FontWeight="Bold" 
+                               Foreground="Black" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               Margin="0,2,0,0"/>
                 </Grid>
 
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="לרישיון" Foreground="White" FontSize="22" FontWeight="Bold"/>
-                    <TextBlock x:Name="WelcomeNameText"
-                               Text="ברוך הבא, משתמש"
-                               Foreground="#F1F4FF" FontSize="13" Margin="0,2,0,0"/>
+                    <TextBlock Text="לרישיון" Foreground="White" FontSize="20" FontWeight="Bold"/>
+                    <TextBlock x:Name="WelcomeText" Text="שלום, משתמש" Foreground="#DDD" FontSize="14"/>
                 </StackPanel>
             </StackPanel>
 
-            <!-- כפתורי עליון -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
-                <Button Content="התנתק" Click="Logout_Click" Style="{StaticResource HeaderFlatButton}" Margin="0,0,6,0"/>
-                <Button Content="X" Click="Close_Click" Style="{StaticResource CloseButtonStatic}"/>
-            </StackPanel>
+            <Button Content="יציאה" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0" 
+                    Background="Transparent" Foreground="White" BorderThickness="0" Click="Logout_Click"/>
         </Grid>
 
-        <!-- CONTENT -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="18,16,18,24">
+        <!-- MAIN CONTENT -->
+        <Grid Grid.Row="1" Margin="30">
 
-                <!-- שורת טייטל -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="2,0,2,8">
-                    <TextBlock Text="מה תרצה לעשות היום?"
-                               Foreground="{StaticResource TextDark}"
-                               FontSize="20" FontWeight="Bold" />
-                    <Border Background="{StaticResource YellowBrush}" CornerRadius="6" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="דף הבית" Foreground="#222"/>
+            <!-- ===== תצוגת תלמיד (STUDENT DASHBOARD) ===== -->
+            <Grid x:Name="StudentDashboard" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <!-- אזור התקדמות ראשי -->
+                    <ColumnDefinition Width="1*"/>
+                    <!-- פעולות מהירות -->
+                </Grid.ColumnDefinitions>
+
+                <!-- אזור ימני: התקדמות ושיעור קרוב -->
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+
+                    <!-- 1. בר התקדמות -->
+                    <Border Style="{StaticResource HeroCard}" Padding="20" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="ההתקדמות שלך לרישיון" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
+                            <Grid Margin="0,15">
+                                <ProgressBar x:Name="LicenseProgress" Height="20" Value="0" Maximum="28" Foreground="#4CAF50" Background="#EEE" BorderThickness="0"/>
+                                <TextBlock x:Name="ProgressText" Text="0/28 שיעורים" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                            </Grid>
+                            <TextBlock Text="כל הכבוד! המשך כך." FontSize="14" Foreground="{StaticResource TextLight}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 2. השיעור הבא (Live Data) -->
+                    <Border Style="{StaticResource HeroCard}" Padding="20" Background="#E3F2FD">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="השיעור הקרוב" FontSize="16" Foreground="#1565C0" FontWeight="Bold"/>
+                                <TextBlock x:Name="NextLessonDate" Text="אין שיעורים עתידיים" FontSize="24" FontWeight="Bold" Margin="0,5" Foreground="{StaticResource TextDark}"/>
+                                <TextBlock x:Name="NextLessonDetails" Text="הזמן שיעור עכשיו כדי להתקדם!" FontSize="16" Foreground="{StaticResource TextLight}"/>
+                            </StackPanel>
+                            <TextBlock Text="🚗" FontSize="40" Grid.Column="1" VerticalAlignment="Center" Opacity="0.5"/>
+                        </Grid>
                     </Border>
                 </StackPanel>
 
-                <!-- כרטיסים -->
-                <WrapPanel ItemWidth="280" ItemHeight="Auto">
-                    <!-- ניהול שיעורים -->
-                    <Border Style="{StaticResource ActionCard}" Width="280">
+                <!-- אזור שמאלי: פעולות מהירות -->
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="פעולות מהירות" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <Button Style="{StaticResource ActionButton}" Margin="0,0,0,10" Click="FindTeachers_Click" Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔍" FontSize="20" Margin="0,0,10,0"/>
+                            <TextBlock Text="חפש מורה והזמן שיעור" FontSize="16"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Background="White" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,10" Height="60" BorderBrush="#DDD" BorderThickness="1" Click="Profile_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👤" FontSize="20" Margin="0,0,10,0"/>
+                            <TextBlock Text="הפרופיל שלי" FontSize="16" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ===== תצוגת מורה (TEACHER DASHBOARD) ===== -->
+            <Grid x:Name="TeacherDashboard" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- אזור ימני: הלו"ז שלי להיום -->
+                <Border Grid.Column="0" Style="{StaticResource HeroCard}" Padding="20" Margin="0,0,20,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock Text="📅 הלו&quot;ז שלי להיום" FontSize="20" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
+                            <TextBlock x:Name="TodaysDateText" Text="(10/12/2025)" FontSize="16" Foreground="{StaticResource TextLight}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <!-- רשימת שיעורים להיום -->
+                        <DataGrid x:Name="TodaysLessonsGrid" Grid.Row="1" AutoGenerateColumns="False" 
+                                  HeadersVisibility="Column" GridLinesVisibility="Horizontal" Background="White" BorderThickness="0" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="שעה" Binding="{Binding StartTime, StringFormat=HH:mm}" Width="80"/>
+                                <DataGridTextColumn Header="תלמיד" Binding="{Binding StudentName}" Width="*"/>
+                                <DataGridTextColumn Header="מיקום" Binding="{Binding Location}" Width="*"/>
+                                <DataGridTextColumn Header="סטטוס" Binding="{Binding StatusName}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Button Grid.Row="2" Content="נהל יומן מלא" Margin="0,15,0,0" Background="{StaticResource PrimaryBlue}" Foreground="White" Padding="10" Click="ManageLessons_Click"/>
+                    </Grid>
+                </Border>
+
+                <!-- אזור שמאלי: סטטיסטיקה וניהול -->
+                <StackPanel Grid.Column="1">
+
+                    <!-- כרטיס הספק יומי -->
+                    <Border Style="{StaticResource HeroCard}" Padding="15" Margin="0,0,0,15" Background="#F0F4C3">
                         <StackPanel>
-                            <TextBlock Text="📅 ניהול שיעורים" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
-                            <TextBlock Text="צפה, קבע או בטל שיעורים בקלות."
-                                       Foreground="#606A7A" Margin="0,6,0,14"/>
-                            <Button Content="למסך ניהול שיעורים" Style="{StaticResource PrimaryButton}" Click="ManageLessons_Click"/>
+                            <TextBlock Text="הספק יומי" FontSize="16" Foreground="#827717" FontWeight="SemiBold"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                                <TextBlock x:Name="DailyProgressText" Text="0/0" FontSize="28" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
+                                <TextBlock Text=" שיעורים בוצעו" FontSize="16" VerticalAlignment="Bottom" Margin="5,0,0,4" Foreground="{StaticResource TextLight}"/>
+                            </StackPanel>
+                            <ProgressBar x:Name="DailyProgressBar" Height="8" Margin="0,5,0,0" Background="White" Foreground="#CDDC39" BorderThickness="0" Value="0"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- מציאת מורים זמינים -->
-                    <Border Style="{StaticResource ActionCard}" Width="280">
-                        <StackPanel>
-                            <TextBlock Text="🚗 מציאת מורים זמינים" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
-                            <TextBlock Text="סינון לפי מיקום, מחיר, סוג רכב ודירוג."
-                                       Foreground="#606A7A" Margin="0,6,0,14"/>
-                            <Button Content="חפש מורה" Style="{StaticResource PrimaryButton}" Click="FindTeachers_Click"/>
+                    <Button Style="{StaticResource ActionButton}" Margin="0,0,0,10" Content="התלמידים שלי" Click="MyStudents_Click"/>
+                    <Button Background="White" BorderBrush="#DDD" BorderThickness="1" Content="פרופיל אישי" Height="40" Click="Profile_Click"/>
+                </StackPanel>
+            </Grid>
 
-                        </StackPanel>
-                    </Border>
-
-                    <!-- תשלומים -->
-                    <Border Style="{StaticResource ActionCard}" Width="280">
-                        <StackPanel>
-                            <TextBlock Text="💳 תשלומים ויתרות" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
-                            <TextBlock Text="היסטוריית תשלומים, יתרה וקבלות."
-                                       Foreground="#606A7A" Margin="0,6,0,14"/>
-                            <Button Content="למסך תשלומים" Style="{StaticResource PrimaryButton}" Click="Payments_Click"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- הפרופיל שלי -->
-                    <Border Style="{StaticResource ActionCard}" Width="280">
-                        <StackPanel>
-                            <TextBlock Text="👤 הפרופיל שלי" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
-                            <TextBlock Text="עדכון פרטים אישיים, סוג רכב מועדף ועוד."
-                                       Foreground="#606A7A" Margin="0,6,0,14"/>
-                            <Button Content="פתח פרופיל" Style="{StaticResource PrimaryButton}" Click="Profile_Click"/>
-                        </StackPanel>
-                    </Border>
-                </WrapPanel>
-            </StackPanel>
-        </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

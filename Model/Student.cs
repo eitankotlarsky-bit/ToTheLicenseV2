@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
     public class Student : User
     {
         private string licenseType;
-        private int lessons;
+        private int lessonsCount; // שדה Lessons בטבלה
 
         public string LicenseType { get => licenseType; set => licenseType = value; }
-        public int Lessons { get => lessons; set => lessons = value; }
+        public int LessonsCount { get => lessonsCount; set => lessonsCount = value; }
     }
 }

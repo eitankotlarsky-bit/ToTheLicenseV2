@@ -18,7 +18,6 @@
         <!-- ===== HEADER ===== -->
         <Border Background="#2B4A9B" CornerRadius="0" Height="60">
             <DockPanel VerticalAlignment="Center">
-                <!-- כפתור חזרה -->
                 <Button Content="⬅ חזור"
                         Click="BackButton_Click"
                         Foreground="White"
@@ -29,7 +28,6 @@
                         Cursor="Hand"
                         DockPanel.Dock="Right"/>
 
-                <!-- כותרת -->
                 <TextBlock Text="🔍 מציאת מורים זמינים"
                            Foreground="White"
                            FontSize="24"
@@ -48,8 +46,10 @@
             </StackPanel>
 
             <StackPanel Margin="5">
-                <TextBlock Text="סוג רכב:" Foreground="#333" FontWeight="Bold"/>
-                <TextBox x:Name="VehicleTextBox" Width="150" Padding="6"/>
+                <!-- שינינו את הכותרת -->
+                <TextBlock Text="מחיר מקסימלי לשיעור:" Foreground="#333" FontWeight="Bold"/>
+                <!-- שינינו את השם של הפקד -->
+                <TextBox x:Name="PriceTextBox" Width="150" Padding="6"/>
             </StackPanel>
 
             <Button Content="חפש"

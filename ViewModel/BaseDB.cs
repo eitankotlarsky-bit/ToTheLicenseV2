@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using Model;
 
 namespace ViewModel
@@ -27,16 +23,13 @@ namespace ViewModel
 
         protected BaseDB()
         {
+
             this.connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data " +
-                                    "Source=..\\..\\..\\ViewModel\\DataBase\\Database11.accdb;Persist " +
-                                    "Security Info=True";
-
-
-
+                        "Source=..\\..\\..\\ViewModel\\DataBase\\Database11 (1).accdb;Persist " +
+                        "Security Info=True";
 
             this.connection = new OleDbConnection(this.connectionString);
             this.command = new OleDbCommand();
-
             this.command.Connection = this.connection;
 
             inserted = new List<ChangeEntity>();
@@ -46,118 +39,97 @@ namespace ViewModel
 
         public List<BaseEntity> Select()
         {
-            //this.command.CommandText = "SELECT *, tblPeople.id AS ID FROM (tblPeople INNER JOIN tblStudent ON tblPeople.id = tblStudent.id)";
             List<BaseEntity> list = new List<BaseEntity>();
 
             try
             {
-                this.command.Connection = connection;
-                this.connection.Open();
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
 
+                // כאן הייתה הבעיה של CommandText ריק - בפונקציות היורשות אנחנו חייבים להגדיר אותו
                 this.reader = command.ExecuteReader();
-
-                BaseEntity entity;
 
                 while (this.reader.Read())
                 {
-                    entity = NewEntity();
-
+                    BaseEntity entity = NewEntity();
                     this.CreateModel(entity);
-
                     list.Add(entity);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message + "\nSQL: " + command.CommandText);
+                System.Diagnostics.Debug.WriteLine("Error in Select: " + ex.Message);
+                // במקרה של שגיאה קריטית, אנחנו זורקים אותה החוצה כדי שה-UI יציג אותה
+                throw ex;
             }
             finally
             {
-                if (this.reader != null)
-                    this.reader.Close();
-
-                if (this.connection.State == ConnectionState.Open)
-                    this.connection.Close();
+                if (reader != null && !reader.IsClosed) reader.Close();
+                if (connection.State == ConnectionState.Open) connection.Close();
             }
 
             return list;
-
         }
 
+        // --- שאר הפונקציות ללא שינוי ---
+        public virtual void Insert(BaseEntity entity)
+        {
+            if (entity != null) this.inserted.Add(new ChangeEntity(this.CreateInsertSQL, entity));
+        }
 
-        //public virtual void Insert(BaseEntity entity)
-        //{
-        //    BaseEntity reqEntity = this.NewEntity();
+        public virtual void Update(BaseEntity entity)
+        {
+            if (entity != null) this.updated.Add(new ChangeEntity(this.CreateUpdateSQL, entity));
+        }
 
-        //    if (entity != null && entity.GetType() == reqEntity.GetType())
-        //        this.inserted.Add(new ChangeEntity(this.CreateInsertSQL,entity));
-        //}
-
-        //public virtual void Update(BaseEntity entity)
-        //{
-        //    BaseEntity reqEntity = this.NewEntity();
-
-        //    if (entity != null && entity.GetType() == reqEntity.GetType())
-        //        this.updated.Add(new ChangeEntity(this.CreateUpdateSQL, entity));
-        //}
-        //public virtual void Delete(BaseEntity entity)
-        //{
-        //    BaseEntity reqEntity = this.NewEntity();
-
-        //    if (entity != null && entity.GetType() == reqEntity.GetType())
-        //        this.deleted.Add(new ChangeEntity(this.CreateDeleteSQL, entity));
-        //}
+        public virtual void Delete(BaseEntity entity)
+        {
+            if (entity != null) this.deleted.Add(new ChangeEntity(this.CreateDeleteSQL, entity));
+        }
 
         public abstract string CreateInsertSQL(BaseEntity entity);
         public abstract string CreateUpdateSQL(BaseEntity entity);
         public abstract string CreateDeleteSQL(BaseEntity entity);
 
-        //public int SaveChanges()
-        //{
-        //    int records = 0;
-        //    OleDbCommand cmd = new OleDbCommand();
+        public int SaveChanges()
+        {
+            int records = 0;
+            try
+            {
+                if (connection.State != ConnectionState.Open) connection.Open();
 
-        //    try
-        //    {
-        //        cmd.Connection = this.connection;                
-        //        this.connection.Open();
+                foreach (var item in inserted)
+                {
+                    command.CommandText = item.CreateSQL(item.Entity);
+                    records += command.ExecuteNonQuery();
+                    
+                    // שליפת ID אוטומטי
+                    command.CommandText = "Select @@Identity";
+                    try { item.Entity.Id = (int)command.ExecuteScalar(); } catch { }
+                }
 
-        //        foreach (ChangeEntity item in this.inserted)
-        //        {
-        //            cmd.CommandText = item.CreateSQL(item.Entity);
-        //            records += cmd.ExecuteNonQuery();
+                foreach (var item in updated)
+                {
+                    command.CommandText = item.CreateSQL(item.Entity);
+                    records += command.ExecuteNonQuery();
+                }
 
-        //            cmd.CommandText = "Select @@Identity";
-        //            item.Entity.Id = (int)cmd.ExecuteScalar();
-        //        }
-
-        //        foreach (ChangeEntity item in this.updated)
-        //        {
-        //            cmd.CommandText = item.CreateSQL(item.Entity);
-        //            records += cmd.ExecuteNonQuery();
-        //        }
-
-        //        foreach (ChangeEntity item in this.deleted)
-        //        {
-        //            cmd.CommandText = item.CreateSQL(item.Entity);
-        //            records += cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Debug.Write(ex.Message + "\nSQL: " + cmd.CommandText);
-        //    }
-        //    finally
-        //    {
-        //        inserted.Clear();
-        //        updated.Clear();
-        //        deleted.Clear();
-
-        //        if (this.connection.State == ConnectionState.Open)
-        //            this.connection.Close();
-        //    }
-
-        //    return records;
-        //}
+                foreach (var item in deleted)
+                {
+                    command.CommandText = item.CreateSQL(item.Entity);
+                    records += command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex; // זורק שגיאה ל-UI
+            }
+            finally
+            {
+                inserted.Clear(); updated.Clear(); deleted.Clear();
+                if (connection.State == ConnectionState.Open) connection.Close();
+            }
+            return records;
+        }
     }
 }

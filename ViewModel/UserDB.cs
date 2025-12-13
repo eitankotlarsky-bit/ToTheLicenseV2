@@ -1,9 +1,5 @@
-﻿using Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Model;
 
 namespace ViewModel
 {
@@ -12,13 +8,18 @@ namespace ViewModel
         protected override void CreateModel(BaseEntity entity)
         {
             User user = entity as User;
+            user.Id = (int)reader["id"];
+            user.UserName = reader["UserName"].ToString();
+            user.Password = reader["Password"].ToString();
+            user.Email = reader["Email"].ToString();
+            user.FirstName = reader["FirstName"].ToString();
+            user.LastName = reader["LastName"].ToString();
+        }
 
-            // -- Users
-            user.Id = (int)this.reader["id"];
-            user.FirstName = this.reader["FirstName"].ToString();
-            user.LastName = this.reader["LastName"].ToString();
-            user.UserName = this.reader["UserName"].ToString();
-            user.Email = this.reader["Email"].ToString();
+        public override string CreateInsertSQL(BaseEntity entity)
+        {
+            User user = entity as User;
+            return $"INSERT INTO tblUsers (UserName, [Password], Email, FirstName, LastName) VALUES ('{user.UserName}', '{user.Password}', '{user.Email}', '{user.FirstName}', '{user.LastName}')";
         }
     }
 }
