@@ -1,0 +1,130 @@
+﻿<Window x:Class="ToTheLicense.Profile"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="הפרופיל שלי" Height="650" Width="500"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        FlowDirection="RightToLeft" FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="BlueBrush" Color="#002366"/>
+        <SolidColorBrush x:Key="YellowBrush" Color="#FFDDA800"/>
+
+        <!-- סטייל לתיבות טקסט -->
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" CornerRadius="15" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.2"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="*"/>
+                <!-- Form -->
+                <RowDefinition Height="Auto"/>
+                <!-- Buttons -->
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Background="#F5F7FA">
+                <Button Content="✕" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15" 
+                        Background="Transparent" BorderThickness="0" FontSize="16" Click="Close_Click" Cursor="Hand"/>
+
+                <StackPanel HorizontalAlignment="Center" Margin="20">
+                    <!-- עיגול פרופיל עם ראשי תיבות -->
+                    <Border Width="70" Height="70" CornerRadius="35" Background="{StaticResource BlueBrush}" Margin="0,0,0,10">
+                        <TextBlock x:Name="InitialsText" Text="יש" Foreground="White" FontSize="28" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="עריכת פרופיל" FontSize="22" FontWeight="Bold" Foreground="#333" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Form Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="30,20">
+                <StackPanel>
+
+                    <!-- חלק 1: פרטים אישיים (משותף לכולם) -->
+                    <TextBlock Text="פרטים אישיים" FontWeight="Bold" Foreground="{StaticResource BlueBrush}" Margin="0,0,0,10"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="שם פרטי"/>
+                            <TextBox x:Name="txtFirstName"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="שם משפחה"/>
+                            <TextBox x:Name="txtLastName"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="אימייל"/>
+                    <TextBox x:Name="txtEmail"/>
+
+                    <TextBlock Text="סיסמה"/>
+                    <TextBox x:Name="txtPassword"/>
+                    <!-- השתמשתי ב-TextBox כדי שיהיה קל לראות ולערוך בפרויקט לימודי -->
+
+                    <!-- חלק 2: מורה בלבד -->
+                    <StackPanel x:Name="TeacherSection" Visibility="Collapsed">
+                        <Separator Margin="0,10,0,20"/>
+                        <TextBlock Text="פרטי מורה והוראה" FontWeight="Bold" Foreground="{StaticResource BlueBrush}" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="אזור פעילות (עיר)"/>
+                        <TextBox x:Name="txtLocation"/>
+
+                        <TextBlock Text="סוג רכב"/>
+                        <TextBox x:Name="txtVehicle"/>
+
+                        <TextBlock Text="מחיר לשיעור (₪)"/>
+                        <TextBox x:Name="txtPrice"/>
+                    </StackPanel>
+
+                    <!-- חלק 3: תלמיד בלבד -->
+                    <StackPanel x:Name="StudentSection" Visibility="Collapsed">
+                        <Separator Margin="0,10,0,20"/>
+                        <TextBlock Text="פרטי לימוד נהיגה" FontWeight="Bold" Foreground="{StaticResource BlueBrush}" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="סוג רישיון מבוקש"/>
+                        <ComboBox x:Name="cmbLicenseType" Height="35" Margin="0,0,0,15">
+                            <ComboBoxItem Content="רכב פרטי (B) - אוטומט"/>
+                            <ComboBoxItem Content="רכב פרטי (B) - ידני"/>
+                            <ComboBoxItem Content="אופנוע (A)"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="2" Margin="30,0,30,30">
+                <Button Content="שמור שינויים" Height="45" 
+                        Background="{StaticResource BlueBrush}" Foreground="White" FontWeight="Bold" FontSize="16"
+                        Cursor="Hand" Click="Save_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

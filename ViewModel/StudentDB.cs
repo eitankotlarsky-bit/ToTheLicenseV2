@@ -57,7 +57,21 @@ namespace ViewModel
             return $"INSERT INTO tblStudents (id, LicenseType, Lessons) VALUES ({student.Id}, '{student.LicenseType}', 0)";
         }
 
-        public override string CreateUpdateSQL(BaseEntity entity) => throw new NotImplementedException();
+        public override void Update(BaseEntity entity)
+        {
+            Student student = entity as Student;
+            if (student != null)
+            {
+                this.updated.Add(new ChangeEntity(base.CreateUpdateSQL, entity));
+                this.updated.Add(new ChangeEntity(this.CreateUpdateSQL, entity));
+            }
+        }
+
+        public override string CreateUpdateSQL(BaseEntity entity)
+        {
+            Student student = entity as Student;
+            return $"UPDATE tblStudents SET LicenseType='{student.LicenseType}' WHERE id={student.Id}";
+        }
         public override string CreateDeleteSQL(BaseEntity entity) => throw new NotImplementedException();
         public StudentList GetStudentsByTeacher(int teacherId)
         {

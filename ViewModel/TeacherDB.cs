@@ -91,7 +91,23 @@ namespace ViewModel
             return $"INSERT INTO tblTeacher (id, Location, VehicleType, LessonPrice, Rating) VALUES ({teacher.Id}, '{teacher.Location}', '{teacher.VehicleType}', {teacher.LessonPrice}, 0)";
         }
 
-        public override string CreateUpdateSQL(BaseEntity entity) => throw new NotImplementedException();
+        public override void Update(BaseEntity entity)
+        {
+            Teacher teacher = entity as Teacher;
+            if (teacher != null)
+            {
+                // עדכון טבלת המשתמשים (דרך מחלקת האב)
+                this.updated.Add(new ChangeEntity(base.CreateUpdateSQL, entity));
+                // עדכון טבלת המורים
+                this.updated.Add(new ChangeEntity(this.CreateUpdateSQL, entity));
+            }
+        }
+
+        public override string CreateUpdateSQL(BaseEntity entity)
+        {
+            Teacher teacher = entity as Teacher;
+            return $"UPDATE tblTeacher SET Location='{teacher.Location}', VehicleType='{teacher.VehicleType}', LessonPrice={teacher.LessonPrice} WHERE id={teacher.Id}";
+        }
         public override string CreateDeleteSQL(BaseEntity entity) => throw new NotImplementedException();
     }
 }

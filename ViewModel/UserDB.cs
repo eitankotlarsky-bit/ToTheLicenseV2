@@ -21,5 +21,10 @@ namespace ViewModel
             User user = entity as User;
             return $"INSERT INTO tblUsers (UserName, [Password], Email, FirstName, LastName) VALUES ('{user.UserName}', '{user.Password}', '{user.Email}', '{user.FirstName}', '{user.LastName}')";
         }
+        public override string CreateUpdateSQL(BaseEntity entity)
+        {
+            User user = entity as User;
+            return $"UPDATE tblUsers SET FirstName='{user.FirstName}', LastName='{user.LastName}', Email='{user.Email}', [Password]='{user.Password}' WHERE id={user.Id}";
+        }
     }
 }

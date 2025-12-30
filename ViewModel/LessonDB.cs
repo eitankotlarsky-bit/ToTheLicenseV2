@@ -71,13 +71,24 @@ namespace ViewModel
 
         public LessonList GetLessonsByTeacher(int teacherId)
         {
-            command.CommandText = $@"
-                SELECT tblLessons.*, tblStatus.StatusName, tblUsers.FirstName, tblUsers.LastName
-                FROM ((tblLessons 
-                LEFT JOIN tblStatus ON tblLessons.Status = tblStatus.id)
-                LEFT JOIN tblStudentLessonReq ON tblLessons.id = tblStudentLessonReq.LessonId)
-                LEFT JOIN tblUsers ON tblStudentLessonReq.StudentId = tblUsers.id
-                WHERE tblLessons.TeacherID={teacherId}";
+            //command.CommandText = $@"
+            //    SELECT tblLessons.*, tblStatus.StatusName,tblLessons.Status , tblUsers.FirstName, tblUsers.LastName
+            //    FROM ((tblLessons 
+            //    LEFT JOIN tblStatus ON tblLessons.Status = tblStatus.id)
+            //    LEFT JOIN tblStudentLessonReq ON tblLessons.id = tblStudentLessonReq.LessonId)
+            //    LEFT JOIN tblUsers ON tblStudentLessonReq.StudentId = tblUsers.id
+            //    WHERE tblLessons.TeacherID={teacherId}";
+
+            command.CommandText = $@"SELECT        
+                                     tblLessons.id, tblLessons.TeacherID, tblLessons.Location, 
+                                     tblLessons.Price, tblLessons.Status, tblLessons.Notes, 
+                                     tblLessons.StartTime, tblLessons.EndTime, tblLessons.VehicleType, 
+                                     tblStatus.StatusName
+                           FROM            
+                              (tblLessons INNER JOIN
+                              tblStatus ON tblLessons.Status = tblStatus.id)
+                           WHERE        
+                                 (tblLessons.TeacherID = {teacherId})";
 
             return new LessonList(base.Select());
         }

@@ -100,9 +100,12 @@ namespace ToTheLicense
             }
         }
 
+        // בקובץ HomePage.xaml.cs, עדכן את הפונקציה הזו:
         private void Profile_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"פרופיל: {currentUser.UserName}\nאימייל: {currentUser.Email}", "הפרופיל שלי");
+            Profile profilePage = new Profile(currentUser);
+            profilePage.Show();
+            this.Close();
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
