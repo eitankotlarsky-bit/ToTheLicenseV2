@@ -1,0 +1,64 @@
+﻿<Window x:Class="ToTheLicense.BookLessonWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="הזמנת שיעור חדש" Height="500" Width="400"
+        WindowStartupLocation="CenterScreen" WindowStyle="None"
+        AllowsTransparency="True" Background="Transparent"
+        FlowDirection="RightToLeft" FontFamily="Segoe UI">
+
+    <Border Background="White" CornerRadius="12" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="15" Opacity="0.2"/>
+        </Border.Effect>
+
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- כותרת -->
+            <StackPanel>
+                <Button Content="✕" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Click="Cancel_Click"/>
+                <TextBlock Text="קביעת שיעור חדש" FontSize="22" FontWeight="Bold" Foreground="#002366" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="TeacherNameText" Text="עם המורה: ישראל ישראלי" FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,20"/>
+            </StackPanel>
+
+            <!-- טופס -->
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="בחר תאריך:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <DatePicker x:Name="LessonDatePicker" Margin="0,0,0,15" Height="30" SelectedDateChanged="LessonDatePicker_SelectedDateChanged"/>
+
+                <TextBlock Text="בחר שעה פנויה:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <ComboBox x:Name="TimeComboBox" Height="30" Margin="0,0,0,15" IsEnabled="False">
+                    <!-- שעות יתמלאו בקוד -->
+                </ComboBox>
+
+                <TextBlock Text="סוג רכב:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="VehicleBox" IsReadOnly="True" Background="#F5F5F5" Height="30" Margin="0,0,0,15"/>
+
+                <TextBlock Text="מיקום איסוף:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox x:Name="LocationBox" Height="30" Margin="0,0,0,15"/>
+
+                <Border Background="#FFF8E1" CornerRadius="8" Padding="10" Margin="0,10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="סה&quot;כ לתשלום: " FontWeight="Bold"/>
+                        <TextBlock x:Name="PriceText" Text="₪160" FontWeight="Bold" Foreground="#FF8F00"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- כפתור אישור -->
+            <Button Grid.Row="2" Content="שלח בקשה לשיעור" 
+                    Background="#FFDDA800" Foreground="#222" FontWeight="Bold" Height="45"
+                    Click="Book_Click" Cursor="Hand">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+    </Border>
+</Window>

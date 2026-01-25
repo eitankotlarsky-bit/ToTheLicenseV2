@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{18502A4D-CC33-4E09-80C4-16678CECAFB6}</ProjectGuid>
+    <ProjectGuid>{F3B9FDDF-DC95-4F64-A20D-2326DB698E08}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ToTheLicense</RootNamespace>
-    <AssemblyName>ToTheLicense</AssemblyName>
+    <RootNamespace>NavigationApp</RootNamespace>
+    <AssemblyName>Navigation App</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,26 +56,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BookLessonWindow.xaml.cs">
-      <DependentUpon>BookLessonWindow.xaml</DependentUpon>
+    <Compile Include="Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MyStudents.xaml.cs">
-      <DependentUpon>MyStudents.xaml</DependentUpon>
+    <Compile Include="RegisterWindow.xaml.cs">
+      <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Register.xaml.cs">
-      <DependentUpon>Register.xaml</DependentUpon>
+    <Compile Include="StudentListPage.xaml.cs">
+      <DependentUpon>StudentListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserProfile.xaml.cs">
-      <DependentUpon>UserProfile.xaml</DependentUpon>
+    <Compile Include="TeacherEditPage.xaml.cs">
+      <DependentUpon>TeacherEditPage.xaml</DependentUpon>
     </Compile>
-    <Page Include="BookLessonWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FindTeacher.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="UserPage.xaml.cs">
+      <DependentUpon>UserPage.xaml</DependentUpon>
+    </Compile>
     <Page Include="HomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -91,40 +87,30 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FindTeacher.xaml.cs">
-      <DependentUpon>FindTeacher.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ManageLessons.xaml">
+    <Page Include="RegisterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MyStudents.xaml">
+    <Page Include="StudentListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Register.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="TeacherEditPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserProfile.xaml">
+    <Page Include="UserPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ManageLessons.xaml.cs">
-      <DependentUpon>ManageLessons.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -152,11 +138,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{6cfe1cb5-4600-4d1d-a3af-15fc9962bb1e}</Project>
+      <Project>{a5e5d1b7-f238-496d-b23b-8538e8d3474f}</Project>
       <Name>Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\ViewModel\ViewModel.csproj">
-      <Project>{af5c62b9-85a1-4158-8412-8471e42c0680}</Project>
+      <Project>{a361cfe0-3799-4ed7-aac6-681e55513ecc}</Project>
       <Name>ViewModel</Name>
     </ProjectReference>
   </ItemGroup>

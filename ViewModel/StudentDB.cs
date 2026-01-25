@@ -5,40 +5,33 @@ namespace ViewModel
 {
     public class StudentDB : UserDB
     {
-        protected override BaseEntity NewEntity()
-        {
-            return new Student();
-        }
+        protected override BaseEntity NewEntity() => new Student();
 
         protected override void CreateModel(BaseEntity entity)
         {
             base.CreateModel(entity);
-
             Student student = entity as Student;
-
             try { student.LicenseType = this.reader["LicenseType"].ToString(); } catch { }
-
-            try
-            {
-                if (this.reader["Lessons"] != DBNull.Value)
-                    student.LessonsCount = int.Parse(this.reader["Lessons"].ToString());
-                else
-                    student.LessonsCount = 0;
-            }
-            catch { student.LessonsCount = 0; }
+            try { if (this.reader["Lessons"] != DBNull.Value) student.LessonsCount = int.Parse(this.reader["Lessons"].ToString()); } catch { }
         }
 
         public Student Login(string username, string password)
         {
-            // שאילתה מתוקנת: בוחרים ספציפית LicenseType ו-Lessons כדי לא ליצור כפילות id
             this.command.CommandText = $"SELECT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons FROM tblUsers INNER JOIN tblStudents ON tblUsers.id = tblStudents.id WHERE (tblUsers.UserName = '{username}') AND (tblUsers.[Password] = '{password}')";
+            StudentList list = new StudentList(base.Select());
+            return list.Count > 0 ? list[0] : null;
+        }
 
-            StudentList students = new StudentList(base.Select());
-
-            if (students.Count > 0)
-                return students[0];
-
-            return null;
+        public StudentList GetStudentsByTeacher(int teacherId)
+        {
+            string sql = $@"SELECT DISTINCT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons
+                            FROM (((tblUsers 
+                            INNER JOIN tblStudents ON tblUsers.id = tblStudents.id)
+                            INNER JOIN tblStudentLessonReq ON tblStudents.id = tblStudentLessonReq.StudentId)
+                            INNER JOIN tblLessons ON tblStudentLessonReq.LessonId = tblLessons.id)
+                            WHERE tblLessons.TeacherID = {teacherId}";
+            this.command.CommandText = sql;
+            return new StudentList(base.Select());
         }
 
         public override void Insert(BaseEntity entity)
@@ -72,28 +65,7 @@ namespace ViewModel
             Student student = entity as Student;
             return $"UPDATE tblStudents SET LicenseType='{student.LicenseType}' WHERE id={student.Id}";
         }
+
         public override string CreateDeleteSQL(BaseEntity entity) => throw new NotImplementedException();
-        public StudentList GetStudentsByTeacher(int teacherId)
-        {
-            // שאילתה שמביאה תלמידים שיש להם שיעורים או בקשות שיעור עם המורה הזה
-            // אנחנו עושים JOIN בין המשתמשים, התלמידים, והבקשות לשיעורים שמקושרות לשיעורים של המורה
-
-            // הערה: זו שאילתה חכמה שמונעת כפילויות (DISTINCT)
-            string sql = $@"
-        SELECT DISTINCT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons
-        FROM (((tblUsers 
-        INNER JOIN tblStudents ON tblUsers.id = tblStudents.id)
-        INNER JOIN tblStudentLessonReq ON tblStudents.id = tblStudentLessonReq.StudentId)
-        INNER JOIN tblLessons ON tblStudentLessonReq.LessonId = tblLessons.id)
-        WHERE tblLessons.TeacherID = {teacherId}";
-
-            this.command.CommandText = sql;
-
-            // אם השאילתה מורכבת מדי לאקסס שלך או מחזירה שגיאה, 
-            // אפשר זמנית להשתמש ב-SelectAll() כדי לראות שהמסך עובד:
-            // this.command.CommandText = "SELECT tblUsers.*, tblStudents.* FROM tblUsers INNER JOIN tblStudents ON tblUsers.id = tblStudents.id";
-
-            return new StudentList(base.Select());
-        }
     }
 }

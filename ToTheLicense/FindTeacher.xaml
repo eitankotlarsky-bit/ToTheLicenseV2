@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="חיפוש מורה"
-        Height="600" Width="900"
+        Height="650" Width="950"
         WindowStartupLocation="CenterScreen"
         Background="#F7F9FC"
         FontFamily="Segoe UI"
@@ -11,90 +11,148 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Header -->
             <RowDefinition Height="Auto"/>
+            <!-- Search Filters -->
             <RowDefinition Height="*"/>
+            <!-- Results List -->
         </Grid.RowDefinitions>
 
         <!-- ===== HEADER ===== -->
-        <Border Background="#2B4A9B" CornerRadius="0" Height="60">
-            <DockPanel VerticalAlignment="Center">
-                <Button Content="⬅ חזור"
+        <Border Background="#2B4A9B" CornerRadius="10" Height="70" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Opacity="0.2" ShadowDepth="3"/>
+            </Border.Effect>
+            <DockPanel VerticalAlignment="Center" Margin="20,0">
+                <Button Content="חזור לדף הבית"
                         Click="BackButton_Click"
                         Foreground="White"
                         Background="Transparent"
-                        FontWeight="Bold"
-                        BorderThickness="0"
-                        Padding="10,6"
+                        FontWeight="SemiBold"
+                        BorderThickness="1"
+                        BorderBrush="#6080C0"
+                        Padding="15,8"
                         Cursor="Hand"
-                        DockPanel.Dock="Right"/>
+                        DockPanel.Dock="Left">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
 
-                <TextBlock Text="🔍 מציאת מורים זמינים"
-                           Foreground="White"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Margin="0,0,60,0"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                    <TextBlock Text="🔍" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#FFD700"/>
+                    <TextBlock Text="מציאת מורים זמינים"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
             </DockPanel>
         </Border>
 
         <!-- ===== SEARCH FIELDS ===== -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,10">
-            <StackPanel Margin="5">
-                <TextBlock Text="עיר / מיקום:" Foreground="#333" FontWeight="Bold"/>
-                <TextBox x:Name="LocationTextBox" Width="150" Padding="6"/>
+        <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="15" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="5" Opacity="0.05"/>
+            </Border.Effect>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                <StackPanel Margin="10">
+                    <TextBlock Text="עיר / אזור:" Foreground="#555" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="LocationTextBox" Width="180" Height="35" Padding="5" VerticalContentAlignment="Center" BorderBrush="#DDD"/>
+                </StackPanel>
+
+                <StackPanel Margin="10">
+                    <TextBlock Text="מחיר מקסימלי לשיעור:" Foreground="#555" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="PriceTextBox" Width="180" Height="35" Padding="5" VerticalContentAlignment="Center" BorderBrush="#DDD"/>
+                </StackPanel>
+
+                <Button Content="חפש מורים"
+                        Click="SearchButton_Click"
+                        Background="#FFD700"
+                        Foreground="#222"
+                        FontWeight="Bold"
+                        Padding="20,0"
+                        Height="35"
+                        Margin="10,24,0,0"
+                        Cursor="Hand"
+                        BorderThickness="0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
             </StackPanel>
+        </Border>
 
-            <StackPanel Margin="5">
-                <!-- שינינו את הכותרת -->
-                <TextBlock Text="מחיר מקסימלי לשיעור:" Foreground="#333" FontWeight="Bold"/>
-                <!-- שינינו את השם של הפקד -->
-                <TextBox x:Name="PriceTextBox" Width="150" Padding="6"/>
-            </StackPanel>
-
-            <Button Content="חפש"
-                    Click="SearchButton_Click"
-                    Background="#FFD700"
-                    Foreground="#222"
-                    FontWeight="Bold"
-                    Padding="10,6"
-                    Margin="10,22,0,0"
-                    Cursor="Hand"
-                    BorderThickness="0"/>
-        </StackPanel>
-
-        <!-- ===== RESULTS ===== -->
+        <!-- ===== RESULTS LIST ===== -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <ItemsControl x:Name="TeachersList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="10" Padding="14"
+                        <!-- כרטיס מורה -->
+                        <Border Margin="5,5,5,15" Padding="20"
                                 CornerRadius="12"
-                                BorderBrush="#2B4A9B"
-                                BorderThickness="1.5"
-                                Background="White">
-                            <StackPanel>
-                                <TextBlock Text="{Binding FullName}"
-                                           FontSize="20"
-                                           FontWeight="Bold"
-                                           Foreground="#D89C00"
-                                           Margin="0,0,0,4"/>
+                                Background="White"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" Opacity="0.05" ShadowDepth="2"/>
+                            </Border.Effect>
 
-                                <TextBlock Text="{Binding VehicleType}"
-                                           FontSize="16"
-                                           FontWeight="Bold"
-                                           Foreground="#002366"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- פרטים -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- כפתור ודירוג -->
+                                </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="{Binding Location}"
-                                           FontSize="14"
-                                           Foreground="#555"
-                                           Margin="0,2,0,0"/>
+                                <!-- פרטי המורה (ימין) -->
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding FullName}" FontSize="20" FontWeight="Bold" Foreground="#2B4A9B"/>
+                                        <Border Background="#E3F2FD" CornerRadius="4" Margin="10,0,0,0" Padding="6,2" VerticalAlignment="Center">
+                                            <TextBlock Text="מורה מוסמך" FontSize="11" Foreground="#1565C0" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </StackPanel>
 
-                                <TextBlock Text="{Binding LessonPrice, StringFormat='מחיר: ₪{0:F0}'}"
-                                           FontSize="14"
-                                           Foreground="#333"
-                                           Margin="0,4,0,0"/>
-                            </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                        <TextBlock Text="🚗" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding VehicleType}" FontSize="15" FontWeight="SemiBold" Foreground="#333"/>
+                                        <TextBlock Text=" | " Foreground="#CCC" Margin="5,0"/>
+                                        <TextBlock Text="📍" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding Location}" FontSize="15" Foreground="#555"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- כפתור הזמנה ומחיר (שמאל) -->
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding LessonPrice, StringFormat='₪{0} לשיעור'}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#333" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+
+                                    <!-- הכפתור שהיה חסר! -->
+                                    <Button Content="📅 הזמן שיעור"
+                                            Background="#FFDDA800"
+                                            Foreground="#222"
+                                            FontWeight="Bold"
+                                            FontSize="14"
+                                            Padding="20,8"
+                                            Cursor="Hand"
+                                            BorderThickness="0"
+                                            Tag="{Binding}" 
+                                            Click="BookTeacher_Click">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

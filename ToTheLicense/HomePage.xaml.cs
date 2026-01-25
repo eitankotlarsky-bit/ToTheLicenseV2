@@ -66,8 +66,10 @@ namespace ToTheLicense
 
             // --- לוגיקה להספק יומי ---
             int totalToday = todaysLessons.Count;
-            // נניח שסטטוס 2 זה "בוצע", או שנבדוק אם השעה עברה
-            int completedToday = todaysLessons.Count(l => l.Status == 2 || l.StartTime < DateTime.Now);
+            // נבדוק אם השיעור בוצע (לפי StatusName) או אם השעה עברה
+            int completedToday = todaysLessons.Count(l => 
+                (l.StatusName != null && l.StatusName.Contains("בוצע")) || 
+                l.StartTime < DateTime.Now);
 
             DailyProgressText.Text = $"{completedToday}/{totalToday}";
 
