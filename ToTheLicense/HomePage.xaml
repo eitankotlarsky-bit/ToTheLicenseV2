@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="לרישיון - דף הבית"
         Height="700" Width="1100"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen"    
         WindowStyle="None"
         Background="#F7F9FC"
         FontFamily="Segoe UI"
@@ -62,21 +62,10 @@
         <!-- HEADER -->
         <Grid Grid.Row="0" Background="{StaticResource PrimaryBlue}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="62,0,-22,0">
-
-                <!-- הלוגו המתוקן: ריבוע כחול עם משולש לבן ואות ל' שחורה -->
                 <Grid Width="48" Height="48" Margin="0,0,12,0">
-                    <!-- רקע כחול -->
                     <Rectangle Fill="#4c6ef5" RadiusX="10" RadiusY="10"/>
-                    <!-- משולש לבן -->
                     <Polygon Points="24,8 8,40 40,40" Fill="White"/>
-                    <!-- האות ל' -->
-                    <TextBlock Text="ל" 
-                               FontSize="22" 
-                               FontWeight="Bold" 
-                               Foreground="Black" 
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center" 
-                               Margin="0,2,0,0"/>
+                    <TextBlock Text="ל" FontSize="22" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2,0,0"/>
                 </Grid>
 
                 <StackPanel VerticalAlignment="Center">
@@ -96,9 +85,7 @@
             <Grid x:Name="StudentDashboard" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
-                    <!-- אזור התקדמות ראשי -->
                     <ColumnDefinition Width="1*"/>
-                    <!-- פעולות מהירות -->
                 </Grid.ColumnDefinitions>
 
                 <!-- אזור ימני: התקדמות ושיעור קרוב -->
@@ -116,7 +103,7 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- 2. השיעור הבא (Live Data) -->
+                    <!-- 2. השיעור הבא (Live Data) - העיצוב המקורי -->
                     <Border Style="{StaticResource HeroCard}" Padding="20" Background="#E3F2FD">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -160,7 +147,6 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- אזור ימני: הלו"ז שלי להיום -->
                 <Border Grid.Column="0" Style="{StaticResource HeroCard}" Padding="20" Margin="0,0,20,0">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -174,7 +160,6 @@
                             <TextBlock x:Name="TodaysDateText" Text="(10/12/2025)" FontSize="16" Foreground="{StaticResource TextLight}" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
 
-                        <!-- רשימת שיעורים להיום -->
                         <DataGrid x:Name="TodaysLessonsGrid" Grid.Row="1" AutoGenerateColumns="False" 
                                   HeadersVisibility="Column" GridLinesVisibility="Horizontal" Background="White" BorderThickness="0" IsReadOnly="True">
                             <DataGrid.Columns>
@@ -189,10 +174,7 @@
                     </Grid>
                 </Border>
 
-                <!-- אזור שמאלי: סטטיסטיקה וניהול -->
                 <StackPanel Grid.Column="1">
-
-                    <!-- כרטיס הספק יומי -->
                     <Border Style="{StaticResource HeroCard}" Padding="15" Margin="0,0,0,15" Background="#F0F4C3">
                         <StackPanel>
                             <TextBlock Text="הספק יומי" FontSize="16" Foreground="#827717" FontWeight="SemiBold"/>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media; // הוספתי בשביל הצבעים
 using Model;
 using ViewModel;
 
@@ -34,19 +35,39 @@ namespace ToTheLicense
             StudentDashboard.Visibility = Visibility.Visible;
             TeacherDashboard.Visibility = Visibility.Collapsed;
 
+            // 1. עדכון בר התקדמות
             int lessonsDone = lessonDB.GetCompletedLessonsCount(student.Id);
             LicenseProgress.Value = lessonsDone;
             ProgressText.Text = $"{lessonsDone}/28 שיעורים בוצעו";
 
+            // 2. עדכון השיעור הבא
             Lesson nextLesson = lessonDB.GetNextLessonForStudent(student.Id);
+
             if (nextLesson != null)
             {
+                // הצגת התאריך בגדול
                 NextLessonDate.Text = nextLesson.StartTime.ToString("dd/MM בשעה HH:mm");
-                NextLessonDetails.Text = $"עם המורה {nextLesson.TeacherName} ב-{nextLesson.Location}";
+
+                // שינוי צבע התאריך והוספת טקסט לפי הסטטוס (שימוש במאפיינים שיצרנו ב-Lesson.cs)
+                try
+                {
+                    // משתמש ב-StatusColor שהגדרנו ב-Model
+                    var color = (Color)ColorConverter.ConvertFromString(nextLesson.StatusColor);
+                    NextLessonDate.Foreground = new SolidColorBrush(color);
+                }
+                catch
+                {
+                    NextLessonDate.Foreground = Brushes.Black;
+                }
+
+                // הצגת פרטים + הסטטוס (מאושר/ממתין) בתוך הסוגריים
+                string statusText = nextLesson.DisplayStatus; // מגיע מ-Lesson.cs
+                NextLessonDetails.Text = $"עם {nextLesson.TeacherName} ב-{nextLesson.Location}\nסטטוס: {statusText}";
             }
             else
             {
                 NextLessonDate.Text = "אין שיעורים קרובים";
+                NextLessonDate.Foreground = Brushes.Black;
                 NextLessonDetails.Text = "לחץ על 'חפש מורה' כדי לקבוע!";
             }
         }
@@ -58,22 +79,18 @@ namespace ToTheLicense
 
             TodaysDateText.Text = DateTime.Now.ToString("(dd/MM/yyyy)");
 
-            // שליפת כל השיעורים וסינון להיום בלבד
+            // טעינת שיעורים להיום
             var allLessons = lessonDB.GetLessonsByTeacher(teacher.Id);
             var todaysLessons = allLessons.Where(l => l.StartTime.Date == DateTime.Today).OrderBy(l => l.StartTime).ToList();
 
             TodaysLessonsGrid.ItemsSource = todaysLessons;
 
-            // --- לוגיקה להספק יומי ---
+            // חישוב הספק יומי (6 = מאושר/בוצע)
             int totalToday = todaysLessons.Count;
-            // נבדוק אם השיעור בוצע (לפי StatusName) או אם השעה עברה
-            int completedToday = todaysLessons.Count(l => 
-                (l.StatusName != null && l.StatusName.Contains("בוצע")) || 
-                l.StartTime < DateTime.Now);
+            int completedToday = todaysLessons.Count(l => l.Status == 6 || l.StartTime < DateTime.Now);
 
             DailyProgressText.Text = $"{completedToday}/{totalToday}";
 
-            // עדכון ה-ProgressBar (מונע חלוקה באפס)
             DailyProgressBar.Maximum = totalToday > 0 ? totalToday : 1;
             DailyProgressBar.Value = completedToday;
         }
@@ -102,7 +119,6 @@ namespace ToTheLicense
             }
         }
 
-        // בקובץ HomePage.xaml.cs, עדכן את הפונקציה הזו:
         private void Profile_Click(object sender, RoutedEventArgs e)
         {
             Profile profilePage = new Profile(currentUser);
@@ -115,11 +131,6 @@ namespace ToTheLicense
             Login login = new Login();
             login.Show();
             this.Close();
-        }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
         }
     }
 }
