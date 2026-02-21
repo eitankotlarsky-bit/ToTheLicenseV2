@@ -10,7 +10,6 @@ namespace ViewModel
 {
     public class LessonDB : BaseDB
     {
-        // 5 = ממתין, 6 = בוצע/מאושר, 7 = בוטל
         private const int STATUS_PENDING = 5;
         private const int STATUS_DONE = 6;
         private const int STATUS_CANCELLED = 7;
@@ -37,12 +36,30 @@ namespace ViewModel
             try { l.StudentName = reader["FirstName"].ToString() + " " + reader["LastName"].ToString(); } catch { }
         }
 
-        // --- הפונקציה עם הדיבאג המלא ---
+        public Lesson GetLastCompletedLesson(int studentId)
+        {
+            DateTime now = DateTime.Now;
+            string nowStr = now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            command.CommandText = $@"
+                SELECT TOP 1 tblLessons.*, tblStatus.StatusName, tblUsers.FirstName, tblUsers.LastName
+                FROM ((tblLessons 
+                LEFT JOIN tblStatus ON tblLessons.Status = tblStatus.id)
+                INNER JOIN tblStudentLessonReq ON tblLessons.id = tblStudentLessonReq.LessonId)
+                INNER JOIN (tblTeacher INNER JOIN tblUsers ON tblTeacher.id = tblUsers.id) 
+                ON tblLessons.TeacherID = tblTeacher.id
+                WHERE tblStudentLessonReq.StudentId={studentId} 
+                AND tblLessons.Status={STATUS_DONE} 
+                AND tblLessons.EndTime < #{nowStr}#
+                ORDER BY tblLessons.EndTime DESC";
+
+            LessonList list = new LessonList(base.Select());
+            return list.Count > 0 ? list[0] : null;
+        }
+
         public Lesson GetNextLessonForStudent(int studentId)
         {
-            System.Diagnostics.Debug.WriteLine($"--- DEBUG START: GetNextLessonFor StudentID {studentId} ---");
-
-            // שליפת כל השיעורים של התלמיד ללא סינון תאריך בשאילתה
+            DateTime now = DateTime.Now;
             command.CommandText = $@"
                 SELECT tblLessons.*, tblStatus.StatusName, tblUsers.FirstName, tblUsers.LastName
                 FROM ((tblLessons 
@@ -55,44 +72,11 @@ namespace ViewModel
 
             LessonList allLessons = new LessonList(base.Select());
 
-            System.Diagnostics.Debug.WriteLine($"DEBUG: Found {allLessons.Count} total lessons for this student in DB.");
-
-            DateTime now = DateTime.Now;
-            System.Diagnostics.Debug.WriteLine($"DEBUG: Current Computer Time: {now}");
-
-            // לולאת בדיקה לכל שיעור
-            foreach (var l in allLessons)
-            {
-                bool isFuture = l.StartTime > now;
-                bool isNotCancelled = l.Status != STATUS_CANCELLED;
-
-                System.Diagnostics.Debug.WriteLine($"Checking Lesson ID: {l.Id} | Date: {l.StartTime} | Status: {l.Status}");
-                System.Diagnostics.Debug.WriteLine($"   -> Is Future? {isFuture}");
-                System.Diagnostics.Debug.WriteLine($"   -> Is Not Cancelled? {isNotCancelled}");
-
-                if (isFuture && isNotCancelled)
-                {
-                    System.Diagnostics.Debug.WriteLine("   -> MATCH! This lesson is a candidate.");
-                }
-            }
-
-            // הסינון האמיתי ב-C#
-            var nextLesson = allLessons
+            return allLessons
                 .Where(l => l.StartTime > now && l.Status != STATUS_CANCELLED)
                 .OrderBy(l => l.StartTime)
                 .FirstOrDefault();
-
-            if (nextLesson == null)
-                System.Diagnostics.Debug.WriteLine("DEBUG: Result is NULL (No suitable lesson found)");
-            else
-                System.Diagnostics.Debug.WriteLine($"DEBUG: Selected Lesson ID: {nextLesson.Id}");
-
-            System.Diagnostics.Debug.WriteLine("--- DEBUG END ---");
-
-            return nextLesson;
         }
-
-        // --- שאר הפונקציות (ללא שינוי) ---
 
         public LessonList GetLessonsByTeacher(int teacherId)
         {
@@ -103,19 +87,6 @@ namespace ViewModel
                 LEFT JOIN tblStudentLessonReq ON tblLessons.id = tblStudentLessonReq.LessonId)
                 LEFT JOIN tblUsers ON tblStudentLessonReq.StudentId = tblUsers.id
                 WHERE tblLessons.TeacherID={teacherId} ORDER BY tblLessons.StartTime DESC";
-            return new LessonList(base.Select());
-        }
-
-        public LessonList GetLessonsByStudent(int studentId)
-        {
-            command.CommandText = $@"
-                SELECT tblLessons.*, tblStatus.StatusName, tblUsers.FirstName, tblUsers.LastName
-                FROM ((tblLessons 
-                LEFT JOIN tblStatus ON tblLessons.Status = tblStatus.id)
-                INNER JOIN tblStudentLessonReq ON tblLessons.id = tblStudentLessonReq.LessonId)
-                INNER JOIN (tblTeacher INNER JOIN tblUsers ON tblTeacher.id = tblUsers.id) 
-                ON tblLessons.TeacherID = tblTeacher.id
-                WHERE tblStudentLessonReq.StudentId={studentId} ORDER BY tblLessons.StartTime DESC";
             return new LessonList(base.Select());
         }
 
@@ -155,21 +126,6 @@ namespace ViewModel
                 if (lesson.StartTime.Date == date.Date) filtered.Add(lesson);
             }
             return filtered;
-        }
-
-        public bool IsSlotAvailable(int teacherId, DateTime start, DateTime end)
-        {
-            command.CommandText = $"SELECT * FROM tblLessons WHERE TeacherID={teacherId}";
-            List<BaseEntity> allLessons = base.Select();
-
-            foreach (Lesson l in allLessons)
-            {
-                if (l.Status != STATUS_CANCELLED && l.StartTime.Date == start.Date)
-                {
-                    if (start < l.EndTime && end > l.StartTime) return false;
-                }
-            }
-            return true;
         }
 
         public void BookLesson(Lesson lesson, int studentId)

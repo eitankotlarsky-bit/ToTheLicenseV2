@@ -81,6 +81,10 @@
                             <ComboBoxItem Content="רכב פרטי (B) - ידני"/>
                             <ComboBoxItem Content="אופנוע (A)"/>
                         </ComboBox>
+
+                        <!-- התוספת החדשה: צ'קבוקס לתיאוריה -->
+                        <CheckBox x:Name="chkTheory" Content="כבר עברתי מבחן תיאוריה 📜" 
+                                  FontWeight="SemiBold" Margin="0,5,0,15" FontSize="14" Foreground="#2E7D32"/>
                     </StackPanel>
 
                     <!-- שדות ספציפיים למורה -->

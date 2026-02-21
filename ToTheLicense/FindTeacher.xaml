@@ -11,11 +11,8 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Header -->
             <RowDefinition Height="Auto"/>
-            <!-- Search Filters -->
             <RowDefinition Height="*"/>
-            <!-- Results List -->
         </Grid.RowDefinitions>
 
         <!-- ===== HEADER ===== -->
@@ -106,17 +103,21 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <!-- פרטים -->
                                     <ColumnDefinition Width="Auto"/>
-                                    <!-- כפתור ודירוג -->
                                 </Grid.ColumnDefinitions>
 
                                 <!-- פרטי המורה (ימין) -->
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding FullName}" FontSize="20" FontWeight="Bold" Foreground="#2B4A9B"/>
-                                        <Border Background="#E3F2FD" CornerRadius="4" Margin="10,0,0,0" Padding="6,2" VerticalAlignment="Center">
-                                            <TextBlock Text="מורה מוסמך" FontSize="11" Foreground="#1565C0" FontWeight="SemiBold"/>
+
+                                        <!-- תצוגת דירוג חדשה -->
+                                        <Border Background="#FFF8E1" CornerRadius="15" Margin="15,0,0,0" Padding="8,2" VerticalAlignment="Center" BorderBrush="#FFECB3" BorderThickness="1">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="⭐" Foreground="#FFC107" Margin="0,0,4,0" FontSize="14"/>
+                                                <!-- F1 אומר ספרה אחת אחרי הנקודה (למשל 4.8) -->
+                                                <TextBlock Text="{Binding Rating, StringFormat=F1}" FontWeight="Bold" Foreground="#333" FontSize="14"/>
+                                            </StackPanel>
                                         </Border>
                                     </StackPanel>
 
@@ -134,7 +135,6 @@
                                     <TextBlock Text="{Binding LessonPrice, StringFormat='₪{0} לשיעור'}" 
                                                FontSize="18" FontWeight="Bold" Foreground="#333" HorizontalAlignment="Center" Margin="0,0,0,8"/>
 
-                                    <!-- הכפתור שהיה חסר! -->
                                     <Button Content="📅 הזמן שיעור"
                                             Background="#FFDDA800"
                                             Foreground="#222"

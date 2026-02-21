@@ -23,6 +23,10 @@ namespace ToTheLicense
 
             // Populate UI
             TeacherNameText.Text = $"עם: {teacher.FullName}";
+
+            // עדכון הדירוג בתצוגה (F1 מציג ספרה אחת אחרי הנקודה)
+            TeacherRatingText.Text = $"דירוג: ⭐ {teacher.Rating:F1}";
+
             VehicleBox.Text = teacher.VehicleType;
             LocationBox.Text = teacher.Location;
             PriceText.Text = $"₪{teacher.LessonPrice}";
@@ -93,13 +97,12 @@ namespace ToTheLicense
                 DateTime endTime = startTime.AddMinutes(45);
 
                 // 2. Create Lesson Object
-                // ה-Status יקבע אוטומטית ב-CreateInsertSQL לפי מה שיש בטבלת tblStatus
                 Lesson newLesson = new Lesson
                 {
                     TeacherId = selectedTeacher.Id,
-                    Location = selectedTeacher.Location,
+                    Location = LocationBox.Text, // לוקח את המיקום שהמשתמש יכול לערוך
                     Price = selectedTeacher.LessonPrice,
-                    Status = 0, // זה לא משנה - יקבע אוטומטית ב-CreateInsertSQL
+                    Status = 0,
                     Notes = "",
                     StartTime = startTime,
                     EndTime = endTime,
@@ -112,7 +115,6 @@ namespace ToTheLicense
 
                 if (rows > 0)
                 {
-                    // Success - Close window smoothly (no MessageBox per instructions)
                     this.Close();
                 }
                 else

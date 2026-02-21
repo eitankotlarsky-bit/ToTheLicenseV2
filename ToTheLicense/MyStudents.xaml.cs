@@ -26,7 +26,20 @@ namespace ToTheLicense
             // שליפת התלמידים של המורה הנוכחי
             allStudents = studentDB.GetStudentsByTeacher(currentTeacher.Id);
 
-            // עדכון הטבלה
+            // ================================================================
+            // תיקון: חישוב כמות השיעורים שבוצעו בפועל עבור כל תלמיד
+            // מכיוון שהעמודה בדאטה-בייס לא תמיד מעודכנת, נחשב בזמן אמת
+            // ================================================================
+            LessonDB lessonDB = new LessonDB();
+
+            foreach (Student student in allStudents)
+            {
+                // הפונקציה הזו כבר קיימת ב-LessonDB וסופרת כמה שיעורים בסטטוס "בוצע" (6) יש לתלמיד
+                // אנחנו דורסים את הערך 0 שהגיע מהדאטה-בייס בערך האמיתי המחושב כעת
+                student.LessonsCount = lessonDB.GetCompletedLessonsCount(student.Id);
+            }
+
+            // עדכון הטבלה עם הנתונים המעודכנים
             StudentsGrid.ItemsSource = allStudents;
 
             // עדכון כותרת משנה

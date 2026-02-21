@@ -18,21 +18,22 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- כותרת -->
             <StackPanel>
                 <Button Content="✕" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Click="Cancel_Click"/>
                 <TextBlock Text="קביעת שיעור חדש" FontSize="22" FontWeight="Bold" Foreground="#002366" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="TeacherNameText" Text="עם המורה: ישראל ישראלי" FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,20"/>
+
+                <TextBlock x:Name="TeacherNameText" Text="עם המורה: ישראל ישראלי" FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+
+                <!-- כאן התיקון: טקסט ניטרלי -->
+                <TextBlock x:Name="TeacherRatingText" Text="⭐" FontSize="14" FontWeight="Bold" Foreground="#FFC107" HorizontalAlignment="Center" Margin="0,2,0,20"/>
             </StackPanel>
 
-            <!-- טופס -->
             <StackPanel Grid.Row="1">
                 <TextBlock Text="בחר תאריך:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                 <DatePicker x:Name="LessonDatePicker" Margin="0,0,0,15" Height="30" SelectedDateChanged="LessonDatePicker_SelectedDateChanged"/>
 
                 <TextBlock Text="בחר שעה פנויה:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                 <ComboBox x:Name="TimeComboBox" Height="30" Margin="0,0,0,15" IsEnabled="False">
-                    <!-- שעות יתמלאו בקוד -->
                 </ComboBox>
 
                 <TextBlock Text="סוג רכב:" FontWeight="SemiBold" Margin="0,0,0,5"/>
@@ -49,7 +50,6 @@
                 </Border>
             </StackPanel>
 
-            <!-- כפתור אישור -->
             <Button Grid.Row="2" Content="שלח בקשה לשיעור" 
                     Background="#FFDDA800" Foreground="#222" FontWeight="Bold" Height="45"
                     Click="Book_Click" Cursor="Hand">

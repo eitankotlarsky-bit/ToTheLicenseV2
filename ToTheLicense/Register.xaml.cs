@@ -52,7 +52,7 @@ namespace ToTheLicense
 
         private void Register_Click(object sender, RoutedEventArgs e)
         {
-            // בדיקות תקינות (Validations) - כאן נשאיר הודעות כי המשתמש צריך לתקן
+            // בדיקות תקינות
             if (string.IsNullOrWhiteSpace(txtUser.Text) || string.IsNullOrWhiteSpace(txtPass.Password) ||
                 string.IsNullOrWhiteSpace(txtFirstName.Text) || string.IsNullOrWhiteSpace(txtLastName.Text))
             {
@@ -64,6 +64,11 @@ namespace ToTheLicense
             {
                 if (rbStudent.IsChecked == true)
                 {
+                    // דיבאג: בוא נראה מה המחשב קולט מהצ'קבוקס
+                    bool isTheoryChecked = chkTheory.IsChecked == true;
+                    // תוריד את ההערה הזו אם אתה רוצה לראות את ההודעה הקופצת
+                    // MessageBox.Show($"האם עבר תיאוריה? {isTheoryChecked}");
+
                     // === הרשמת תלמיד ===
                     StudentDB sdb = new StudentDB();
                     Student student = new Student
@@ -74,25 +79,27 @@ namespace ToTheLicense
                         LastName = txtLastName.Text,
                         Email = txtEmail.Text,
                         LicenseType = cmbLicenseType.Text,
-                        LessonsCount = 0
+                        LessonsCount = 0,
+                        PassedTheory = isTheoryChecked
                     };
 
                     sdb.Insert(student);
 
                     if (sdb.SaveChanges() > 0)
                     {
-                        // הצלחה! בלי הודעה קופצת, פשוט עוברים למסך התחברות
-                        BackToLogin_Click(null, null);
+                        // אם זה הצליח, נעבור למסך התחברות
+                        Login login = new Login();
+                        login.Show();
+                        this.Close();
                     }
                     else
                     {
-                        // כישלון טכני (נדיר)
                         MessageBox.Show("ההרשמה נכשלה, נא לנסות שוב.", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 else
                 {
-                    // === הרשמת מורה ===
+                    // === הרשמת מורה (ללא שינוי) ===
                     if (string.IsNullOrWhiteSpace(txtPrice.Text))
                     {
                         MessageBox.Show("נא להזין מחיר לשיעור.", "שגיאה", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -116,8 +123,9 @@ namespace ToTheLicense
 
                     if (tdb.SaveChanges() > 0)
                     {
-                        // הצלחה! מעבר חלק למסך התחברות
-                        BackToLogin_Click(null, null);
+                        Login login = new Login();
+                        login.Show();
+                        this.Close();
                     }
                     else
                     {
@@ -127,7 +135,6 @@ namespace ToTheLicense
             }
             catch (Exception ex)
             {
-                // שגיאה קריטית (כמו דאטה בייס מנותק) - חייבים להודיע למשתמש
                 MessageBox.Show("אירעה שגיאה טכנית:\n" + ex.Message, "תקלה", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

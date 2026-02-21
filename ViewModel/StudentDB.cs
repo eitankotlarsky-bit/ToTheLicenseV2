@@ -11,20 +11,31 @@ namespace ViewModel
         {
             base.CreateModel(entity);
             Student student = entity as Student;
-            try { student.LicenseType = this.reader["LicenseType"].ToString(); } catch { }
+
+            try { if (this.reader["LicenseType"] != DBNull.Value) student.LicenseType = this.reader["LicenseType"].ToString(); } catch { }
             try { if (this.reader["Lessons"] != DBNull.Value) student.LessonsCount = int.Parse(this.reader["Lessons"].ToString()); } catch { }
+
+            // קריאה בטוחה של שדה בוליאני
+            try
+            {
+                if (this.reader["PassedTheory"] != DBNull.Value)
+                {
+                    student.PassedTheory = Convert.ToBoolean(this.reader["PassedTheory"]);
+                }
+            }
+            catch { student.PassedTheory = false; }
         }
 
         public Student Login(string username, string password)
         {
-            this.command.CommandText = $"SELECT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons FROM tblUsers INNER JOIN tblStudents ON tblUsers.id = tblStudents.id WHERE (tblUsers.UserName = '{username}') AND (tblUsers.[Password] = '{password}')";
+            this.command.CommandText = $"SELECT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons, tblStudents.PassedTheory FROM tblUsers INNER JOIN tblStudents ON tblUsers.id = tblStudents.id WHERE (tblUsers.UserName = '{username}') AND (tblUsers.[Password] = '{password}')";
             StudentList list = new StudentList(base.Select());
             return list.Count > 0 ? list[0] : null;
         }
 
         public StudentList GetStudentsByTeacher(int teacherId)
         {
-            string sql = $@"SELECT DISTINCT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons
+            string sql = $@"SELECT DISTINCT tblUsers.*, tblStudents.LicenseType, tblStudents.Lessons, tblStudents.PassedTheory
                             FROM (((tblUsers 
                             INNER JOIN tblStudents ON tblUsers.id = tblStudents.id)
                             INNER JOIN tblStudentLessonReq ON tblStudents.id = tblStudentLessonReq.StudentId)
@@ -47,8 +58,14 @@ namespace ViewModel
         public override string CreateInsertSQL(BaseEntity entity)
         {
             Student student = entity as Student;
-            return $"INSERT INTO tblStudents (id, LicenseType, Lessons) VALUES ({student.Id}, '{student.LicenseType}', 0)";
+
+            // שינוי אסטרטגיה: שימוש במילות מפתח של SQL במקום מספרים
+            // זה עוקף בעיות של הגדרות שדה ב-Access
+            string theoryVal = student.PassedTheory ? "True" : "False";
+
+            return $"INSERT INTO tblStudents (id, LicenseType, Lessons, PassedTheory) VALUES ({student.Id}, '{student.LicenseType}', 0, {theoryVal})";
         }
+
 
         public override void Update(BaseEntity entity)
         {
@@ -63,7 +80,10 @@ namespace ViewModel
         public override string CreateUpdateSQL(BaseEntity entity)
         {
             Student student = entity as Student;
-            return $"UPDATE tblStudents SET LicenseType='{student.LicenseType}' WHERE id={student.Id}";
+
+            string theoryVal = student.PassedTheory ? "True" : "False";
+
+            return $"UPDATE tblStudents SET LicenseType='{student.LicenseType}', PassedTheory={theoryVal} WHERE id={student.Id}";
         }
 
         public override string CreateDeleteSQL(BaseEntity entity) => throw new NotImplementedException();
