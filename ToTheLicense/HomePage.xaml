@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="לרישיון - דף הבית"
         Height="700" Width="1100"
-        WindowStartupLocation="CenterScreen"    
+        WindowStartupLocation="CenterScreen"   
         WindowStyle="None"
         Background="#F7F9FC"
         FontFamily="Segoe UI"
@@ -61,7 +61,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- HEADER -->
         <Grid Grid.Row="0" Background="{StaticResource PrimaryBlue}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="62,0,-22,0">
                 <Grid Width="48" Height="48" Margin="0,0,12,0">
@@ -77,13 +76,11 @@
             </StackPanel>
 
             <Button Content="יציאה" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0" 
-                    Background="Transparent" Foreground="White" BorderThickness="0" Click="Logout_Click"/>
+                    Background="Transparent" Foreground="White" BorderThickness="0" Click="Logout_Click" Cursor="Hand"/>
         </Grid>
 
-        <!-- MAIN CONTENT -->
         <Grid Grid.Row="1" Margin="30">
 
-            <!-- ===== תצוגת תלמיד (STUDENT DASHBOARD) ===== -->
             <Grid x:Name="StudentDashboard" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -91,8 +88,6 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Margin="0,0,20,0">
-
-                    <!-- 1. בר התקדמות שיעורים -->
                     <Border Style="{StaticResource HeroCard}" Padding="20" Margin="0,0,0,20">
                         <StackPanel>
                             <TextBlock Text="ההתקדמות שלך לרישיון" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextDark}"/>
@@ -104,7 +99,6 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- 2. השיעור הבא (חזר לכאן בעיצוב מודגש) -->
                     <Border Style="{StaticResource HeroCard}" Padding="20" Background="#E3F2FD" Margin="0,0,0,20">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -120,27 +114,21 @@
                         </Grid>
                     </Border>
 
-                    <!-- 3. ציר הזמן לרישיון -->
                     <Border Style="{StaticResource HeroCard}" Padding="20" Background="White">
                         <StackPanel>
                             <TextBlock Text="הדרך לרישיון 🏁" FontSize="18" FontWeight="Bold" Foreground="#002366" Margin="0,0,0,20"/>
-
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.5*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
-                                    <!-- תיאוריה -->
-                                    <ColumnDefinition Width="60"/>
-                                    <!-- קו -->
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
-                                    <!-- פנימי -->
-                                    <ColumnDefinition Width="60"/>
-                                    <!-- קו -->
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- חיצוני -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="0.5*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- שלב 1: תיאוריה -->
-                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
                                     <Border x:Name="StepTheory" Width="60" Height="60" CornerRadius="30" Background="#E0E0E0" Margin="0,0,0,10">
                                         <TextBlock Text="📚" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
@@ -148,11 +136,9 @@
                                     <TextBlock x:Name="TxtTheoryStatus" Text="טרם בוצע" FontSize="12" Foreground="Gray" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
-                                <!-- קו מחבר 1 -->
-                                <Rectangle x:Name="Line1" Grid.Column="1" Height="4" VerticalAlignment="Top" Margin="0,28,0,0" Fill="#E0E0E0"/>
+                                <Rectangle x:Name="Line1" Grid.Column="2" Height="4" VerticalAlignment="Top" Margin="10,28,10,0" Fill="#E0E0E0"/>
 
-                                <!-- שלב 2: טסט פנימי -->
-                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
                                     <Border x:Name="StepInternal" Width="60" Height="60" CornerRadius="30" Background="#E0E0E0" Margin="0,0,0,10">
                                         <TextBlock Text="🏫" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
@@ -160,19 +146,14 @@
                                     <TextBlock x:Name="TxtInternalStatus" Text="נעול" FontSize="12" Foreground="Gray" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
-                                <!-- קו מחבר 2 -->
-                                <Rectangle x:Name="Line2" Grid.Column="3" Height="4" VerticalAlignment="Top" Margin="0,28,0,0" Fill="#E0E0E0"/>
+                                <Rectangle x:Name="Line2" Grid.Column="4" Height="4" VerticalAlignment="Top" Margin="10,28,10,0" Fill="#E0E0E0"/>
 
-                                <!-- שלב 3: טסט חיצוני -->
-                                <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                                <StackPanel Grid.Column="5" HorizontalAlignment="Center">
                                     <Border x:Name="StepExternal" Width="60" Height="60" CornerRadius="30" Background="#E0E0E0" Margin="0,0,0,10">
                                         <TextBlock Text="🚗" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <TextBlock Text="טסט חיצוני" FontWeight="Bold" HorizontalAlignment="Center"/>
-
-                                    <!-- כפתור בקשה מיוחד -->
-                                    <Button x:Name="BtnRequestTest" Content="בקש טסט" 
-                                            FontSize="11" Padding="10,4" Margin="0,5,0,0" 
+                                    <Button x:Name="BtnRequestTest" Content="בקש טסט" FontSize="11" Padding="10,4" Margin="0,5,0,0" 
                                             Background="#FFDDA800" BorderThickness="0" FontWeight="Bold" Cursor="Hand"
                                             Visibility="Collapsed" Click="RequestExternalTest_Click">
                                         <Button.Resources>
@@ -181,7 +162,6 @@
                                             </Style>
                                         </Button.Resources>
                                     </Button>
-
                                     <TextBlock x:Name="TxtExternalStatus" Text="נעול" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" Visibility="Visible"/>
                                 </StackPanel>
                             </Grid>
@@ -191,9 +171,7 @@
 
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="פעולות מהירות" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-
-                    <Button x:Name="RateButton" Style="{StaticResource ActionButton}" Margin="0,0,0,10" 
-                            Height="60" Click="RateLesson_Click" Visibility="Collapsed" Background="White" BorderBrush="#FFDDA800" BorderThickness="2">
+                    <Button x:Name="RateButton" Style="{StaticResource ActionButton}" Margin="0,0,0,10" Height="60" Click="RateLesson_Click" Visibility="Collapsed" Background="White" BorderBrush="#FFDDA800" BorderThickness="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⭐" FontSize="20" Margin="0,0,10,0"/>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -202,15 +180,13 @@
                             </StackPanel>
                         </StackPanel>
                     </Button>
-
                     <Button Style="{StaticResource ActionButton}" Margin="0,0,0,10" Click="FindTeachers_Click" Height="60">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🔍" FontSize="20" Margin="0,0,10,0"/>
                             <TextBlock Text="חפש מורה והזמן שיעור" FontSize="16"/>
                         </StackPanel>
                     </Button>
-
-                    <Button Background="White" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,10" Height="60" BorderBrush="#DDD" BorderThickness="1" Click="Profile_Click">
+                    <Button Background="White" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,10" Height="60" BorderBrush="#DDD" BorderThickness="1" Click="Profile_Click" Cursor="Hand">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="👤" FontSize="20" Margin="0,0,10,0"/>
                             <TextBlock Text="הפרופיל שלי" FontSize="16" FontWeight="SemiBold"/>
@@ -219,7 +195,6 @@
                 </StackPanel>
             </Grid>
 
-            <!-- ===== תצוגת מורה ===== -->
             <Grid x:Name="TeacherDashboard" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -249,7 +224,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <Button Grid.Row="2" Content="נהל יומן מלא" Margin="0,15,0,0" Background="{StaticResource PrimaryBlue}" Foreground="White" Padding="10" Click="ManageLessons_Click"/>
+                        <Button Grid.Row="2" Content="נהל יומן מלא" Margin="0,15,0,0" Background="{StaticResource PrimaryBlue}" Foreground="White" Padding="10" Click="ManageLessons_Click" Cursor="Hand"/>
                     </Grid>
                 </Border>
 
@@ -279,7 +254,8 @@
                     </Border>
 
                     <Button Style="{StaticResource ActionButton}" Margin="0,0,0,10" Content="התלמידים שלי" Click="MyStudents_Click" Height="40"/>
-                    <Button Background="White" BorderBrush="#DDD" BorderThickness="1" Content="פרופיל אישי" Height="40" Click="Profile_Click"/>
+                    <Button Style="{StaticResource ActionButton}" Margin="0,0,0,10" Content="🚦 ניהול טסטים" Click="ManageTests_Click" Height="40" Background="#FF9800" Foreground="White"/>
+                    <Button Background="White" BorderBrush="#DDD" BorderThickness="1" Content="פרופיל אישי" Height="40" Click="Profile_Click" Cursor="Hand"/>
                 </StackPanel>
             </Grid>
         </Grid>

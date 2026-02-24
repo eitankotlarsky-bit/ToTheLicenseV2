@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Model;
 using ViewModel;
@@ -36,35 +37,28 @@ namespace ToTheLicense
             StudentDashboard.Visibility = Visibility.Visible;
             TeacherDashboard.Visibility = Visibility.Collapsed;
 
-            // 1. עדכון בר התקדמות
             int lessonsDone = lessonDB.GetCompletedLessonsCount(student.Id);
             LicenseProgress.Value = lessonsDone;
             ProgressText.Text = $"{lessonsDone}/28 שיעורים בוצעו";
 
-            // 2. עדכון ה-Roadmap (הפיצ'ר החדש!)
             UpdateRoadmap(student);
-
-            // 3. בדיקה אם המשתמש זכאי לדרג את המורה שלו
             CheckForRateableTeacher(student.Id);
         }
 
         private void UpdateRoadmap(Student student)
         {
             TestDB testDB = new TestDB();
+            var greenBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+            var grayBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0E0E0"));
+            var orangeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
+            var lightGreenBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C8E6C9"));
 
-            // צבעים מוגדרים מראש
-            var greenBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50")); // ירוק הצלחה
-            var grayBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0E0E0"));  // אפור
-            var orangeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800")); // כתום ממתין
-            var lightGreenBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C8E6C9")); // רקע ירוק בהיר
-
-            // === שלב 1: תיאוריה ===
             if (student.PassedTheory)
             {
                 StepTheory.Background = lightGreenBrush;
                 TxtTheoryStatus.Text = "עבר בהצלחה!";
                 TxtTheoryStatus.Foreground = greenBrush;
-                Line1.Fill = greenBrush; // צביעת הקו לשלב הבא
+                Line1.Fill = greenBrush;
             }
             else
             {
@@ -73,7 +67,6 @@ namespace ToTheLicense
                 TxtTheoryStatus.Foreground = Brushes.Gray;
             }
 
-            // === שלב 2: טסט פנימי ===
             TestEntity internalTest = testDB.GetLastTest(student.Id, TestEntity.TYPE_INTERNAL);
             bool internalPassed = false;
 
@@ -82,7 +75,7 @@ namespace ToTheLicense
                 StepInternal.Background = lightGreenBrush;
                 TxtInternalStatus.Text = "עבר בהצלחה!";
                 TxtInternalStatus.Foreground = greenBrush;
-                Line2.Fill = greenBrush; // צביעת הקו לשלב הבא
+                Line2.Fill = greenBrush;
                 internalPassed = true;
             }
             else if (internalTest != null && internalTest.Status == TestEntity.STATUS_APPROVED)
@@ -93,15 +86,12 @@ namespace ToTheLicense
             }
             else
             {
-                // אם עבר תיאוריה, השלב הזה נפתח (נצבע בלבן או אפור בהיר) אבל עדיין לא הושלם
                 StepInternal.Background = student.PassedTheory ? Brushes.White : grayBrush;
                 StepInternal.BorderBrush = student.PassedTheory ? Brushes.Gray : Brushes.Transparent;
                 StepInternal.BorderThickness = student.PassedTheory ? new Thickness(1) : new Thickness(0);
-
                 TxtInternalStatus.Text = student.PassedTheory ? "ממתין למורה" : "נעול";
             }
 
-            // === שלב 3: טסט חיצוני (היעד!) ===
             TestEntity externalTest = testDB.GetLastTest(student.Id, TestEntity.TYPE_EXTERNAL);
 
             BtnRequestTest.Visibility = Visibility.Collapsed;
@@ -113,7 +103,7 @@ namespace ToTheLicense
                 {
                     BtnRequestTest.Visibility = Visibility.Visible;
                     BtnRequestTest.Content = "ממתין לאישור";
-                    BtnRequestTest.IsEnabled = false; // אי אפשר לבקש שוב
+                    BtnRequestTest.IsEnabled = false;
                     BtnRequestTest.Background = Brushes.LightGray;
                     TxtExternalStatus.Visibility = Visibility.Collapsed;
                 }
@@ -132,11 +122,10 @@ namespace ToTheLicense
                 }
                 else if (externalTest.Status == TestEntity.STATUS_FAILED)
                 {
-                    StepExternal.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFEBEE")); // אדום בהיר
+                    StepExternal.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFEBEE"));
                     TxtExternalStatus.Text = "נכשל, נסה שוב";
                     TxtExternalStatus.Foreground = Brushes.Red;
 
-                    // אפשר לבקש שוב
                     BtnRequestTest.Visibility = Visibility.Visible;
                     BtnRequestTest.IsEnabled = true;
                     BtnRequestTest.Content = "בקש שוב";
@@ -145,8 +134,6 @@ namespace ToTheLicense
             }
             else
             {
-                // אם אין טסט חיצוני, נבדוק אם אפשר לבקש
-                // התנאי: עבר תיאוריה + עבר טסט פנימי + השלים מינימום שיעורים (אופציונלי)
                 if (student.PassedTheory && internalPassed)
                 {
                     BtnRequestTest.Visibility = Visibility.Visible;
@@ -165,10 +152,7 @@ namespace ToTheLicense
             TestDB testDB = new TestDB();
             Student s = currentUser as Student;
 
-            // משיגים את המורה האחרון שלימד אותו כדי לשייך את הבקשה
             Lesson lastLesson = new LessonDB().GetLastCompletedLesson(s.Id);
-
-            // אם אין שיעור שהושלם, ננסה למצוא את המורה המשויך בדרך אחרת (למשל שיעור עתידי)
             if (lastLesson == null)
                 lastLesson = new LessonDB().GetNextLessonForStudent(s.Id);
 
@@ -186,7 +170,7 @@ namespace ToTheLicense
                 TeacherId = teacherId,
                 TestType = TestEntity.TYPE_EXTERNAL,
                 Status = TestEntity.STATUS_REQUESTED,
-                TestDate = DateTime.Now.AddDays(14), // תאריך ברירת מחדל (המורה ישנה את זה)
+                TestDate = DateTime.Now.AddDays(14),
                 Notes = "בקשת תלמיד מהאפליקציה"
             };
 
@@ -194,7 +178,7 @@ namespace ToTheLicense
             testDB.SaveChanges();
 
             MessageBox.Show("בקשתך לטסט חיצוני נשלחה למורה בהצלחה!\nהמורה יעדכן את התאריך ויאשר את הבקשה.");
-            UpdateRoadmap(s); // רענון מיידי של המסך
+            UpdateRoadmap(s);
         }
 
         private void CheckForRateableTeacher(int studentId)
@@ -227,7 +211,6 @@ namespace ToTheLicense
             {
                 RateWindow win = new RateWindow(_lessonToRate.TeacherName, _lessonToRate.StartTime, _lessonToRate.TeacherId, student.Id);
                 win.ShowDialog();
-
                 CheckForRateableTeacher(student.Id);
             }
         }
@@ -237,7 +220,6 @@ namespace ToTheLicense
             TeacherDashboard.Visibility = Visibility.Visible;
             StudentDashboard.Visibility = Visibility.Collapsed;
 
-            // רענון הדירוג מהדאטה-בייס
             TeacherDB tdb = new TeacherDB();
             double freshRating = tdb.GetRatingDirectly(teacher.Id);
             teacher.Rating = freshRating;
@@ -282,6 +264,17 @@ namespace ToTheLicense
             if (currentUser is Teacher teacher)
             {
                 MyStudents page = new MyStudents(teacher);
+                page.Show();
+                this.Close();
+            }
+        }
+
+        // הפונקציה החדשה של הטסטים
+        private void ManageTests_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentUser is Teacher teacher)
+            {
+                ManageTests page = new ManageTests(teacher);
                 page.Show();
                 this.Close();
             }

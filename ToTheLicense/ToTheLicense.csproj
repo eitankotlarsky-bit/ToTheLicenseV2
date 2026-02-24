@@ -58,6 +58,9 @@
     <Compile Include="BookLessonWindow.xaml.cs">
       <DependentUpon>BookLessonWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ManageTests.xaml.cs">
+      <DependentUpon>ManageTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MyStudents.xaml.cs">
       <DependentUpon>MyStudents.xaml</DependentUpon>
     </Compile>
@@ -108,6 +111,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ManageLessons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ManageTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

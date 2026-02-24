@@ -22,15 +22,23 @@ namespace Model
         private DateTime testDate;
         private string notes;
 
+        // שדה עזר לתצוגה (כדי לא לעשות שאילתות מסובכות מה-XAML)
+        private string studentName;
+
         public int StudentId { get => studentId; set => studentId = value; }
         public int TeacherId { get => teacherId; set => teacherId = value; }
         public int TestType { get => testType; set => testType = value; }
         public int Status { get => status; set => status = value; }
         public DateTime TestDate { get => testDate; set => testDate = value; }
         public string Notes { get => notes; set => notes = value; }
+        public string StudentName { get => studentName; set => studentName = value; }
 
-        // מאפייני עזר לתצוגה
+        // ==========================================
+        // מאפייני עזר לתצוגה ב-XAML
+        // ==========================================
         public string TestTypeName => TestType == TYPE_INTERNAL ? "טסט פנימי" : "טסט חיצוני";
+
+        // צבע הטקסט של הסטטוס
         public string StatusColor
         {
             get
@@ -41,5 +49,35 @@ namespace Model
                 return "#FF9800"; // כתום (ממתין)
             }
         }
+
+        // צבע הרקע של תווית הסטטוס
+        public string StatusBackground
+        {
+            get
+            {
+                if (Status == STATUS_PASSED) return "#E8F5E9"; // ירוק בהיר
+                if (Status == STATUS_FAILED || Status == STATUS_REJECTED) return "#FFEBEE"; // אדום בהיר
+                if (Status == STATUS_APPROVED) return "#E3F2FD"; // כחול בהיר
+                return "#FFF3E0"; // כתום בהיר (ממתין)
+            }
+        }
+
+        // טקסט קריא לסטטוס
+        public string DisplayStatus
+        {
+            get
+            {
+                if (Status == STATUS_REQUESTED) return "ממתין לאישור";
+                if (Status == STATUS_APPROVED) return "נקבע תאריך";
+                if (Status == STATUS_PASSED) return "עבר ✔️";
+                if (Status == STATUS_FAILED) return "נכשל ❌";
+                if (Status == STATUS_REJECTED) return "נדחה";
+                return "לא ידוע";
+            }
+        }
+
+        // הלוגיקה שמחליטה אילו כפתורים להציג למורה
+        public string ApproveButtonsVisibility => Status == STATUS_REQUESTED ? "Visible" : "Collapsed";
+        public string GradeButtonsVisibility => Status == STATUS_APPROVED ? "Visible" : "Collapsed";
     }
 }

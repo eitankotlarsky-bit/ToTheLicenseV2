@@ -58,6 +58,7 @@
     <Compile Include="TeacherList.cs" />
     <Compile Include="TeacherRating.cs" />
     <Compile Include="TestEntity.cs" />
+    <Compile Include="TestList.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

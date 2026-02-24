@@ -1,0 +1,149 @@
+﻿<Window x:Class="ToTheLicense.ManageTests"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ניהול טסטים" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA" FlowDirection="RightToLeft" FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#002366"/>
+        <SolidColorBrush x:Key="AccentGreen" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#E53935"/>
+        <SolidColorBrush x:Key="AccentBlue" Color="#2196F3"/>
+        <SolidColorBrush x:Key="AccentYellow" Color="#FFDDA800"/>
+
+        <Style x:Key="BtnStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="15,6"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBlue}">
+            <Grid>
+                <Button Content="חזרה ללוח הבקרה" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0"
+                        Background="Transparent" Foreground="White" BorderThickness="1" BorderBrush="#5577B0" Padding="15,8" Click="BackButton_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="🚦" FontSize="26" Margin="0,0,10,0"/>
+                    <TextBlock Text="ניהול טסטים פנימיים וחיצוניים" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="White" CornerRadius="10" Margin="20,20,20,0" Padding="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Color="#DDD" Opacity="0.5" ShadowDepth="2"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="קביעת טסט פנימי לתלמיד" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,15"/>
+                <StackPanel Orientation="Horizontal">
+
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="בחר תלמיד:" Foreground="#666" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="StudentsComboBox" Width="200" Height="35" DisplayMemberPath="FullName" FontSize="14"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="תאריך הטסט:" Foreground="#666" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <DatePicker x:Name="TestDatePicker" Width="150" Height="35" FontSize="14"/>
+                    </StackPanel>
+
+                    <Button Content="קבע טסט פנימי" Background="{StaticResource AccentYellow}" Foreground="#222" FontWeight="Bold" FontSize="14"
+                            Padding="20,0" Height="35" VerticalAlignment="Bottom" Cursor="Hand" BorderThickness="0" Click="CreateInternalTest_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" Margin="20" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="היסטוריה ובקשות ממתינות" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,10,0,15"/>
+
+                <ItemsControl x:Name="TestsList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,15" Background="White" CornerRadius="10" Padding="15">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="8" Color="#DDD" Opacity="0.4" ShadowDepth="2"/>
+                                </Border.Effect>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="{Binding StudentName}" FontSize="18" FontWeight="Bold" Foreground="#333"/>
+                                            <TextBlock Text=" | " Foreground="#CCC" Margin="10,0"/>
+                                            <TextBlock Text="{Binding TestTypeName}" FontSize="16" FontWeight="SemiBold" Foreground="#1565C0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="תאריך הטסט: " Foreground="#666" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                            <Border Background="#FFF3E0" CornerRadius="4" Padding="8,4" Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding TestDate, StringFormat='dd/MM/yyyy'}" Foreground="#E65100" FontWeight="Bold"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <TextBlock Text="{Binding Notes, StringFormat='הערות: {0}'}" Margin="0,8,0,0" Foreground="Gray" FontStyle="Italic"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+
+                                        <Border Background="{Binding StatusBackground}" CornerRadius="15" Padding="15,6" HorizontalAlignment="Right" Margin="0,0,0,10">
+                                            <TextBlock Text="{Binding DisplayStatus}" Foreground="{Binding StatusColor}" FontWeight="Bold"/>
+                                        </Border>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding ApproveButtonsVisibility}">
+                                            <Button Content="אשר טסט (קבע תאריך)" Background="{StaticResource AccentBlue}" Style="{StaticResource BtnStyle}" Click="Approve_Click" Tag="{Binding}"/>
+                                            <Button Content="דחה בקשה" Background="{StaticResource AccentRed}" Style="{StaticResource BtnStyle}" Click="Reject_Click" Tag="{Binding}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding GradeButtonsVisibility}">
+                                            <Button Content="עבר בהצלחה ✔️" Background="{StaticResource AccentGreen}" Style="{StaticResource BtnStyle}" Click="Pass_Click" Tag="{Binding}"/>
+                                            <Button Content="נכשל ❌" Background="{StaticResource AccentRed}" Style="{StaticResource BtnStyle}" Click="Fail_Click" Tag="{Binding}"/>
+                                        </StackPanel>
+
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
